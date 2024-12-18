@@ -36,7 +36,7 @@ export function List() {
         fetchOfzBonds().then(val => setListData(val))
     }, [])
 
-    // console.log(ListData, '👹')
+    console.log(ListData, '👹')
     return (
         <div className={s.tableContainer}>
             <table className={s.table} style={{ width: '50vh' }}>
@@ -54,26 +54,29 @@ export function List() {
                     </tr>
                 </thead>
                 <tbody>
-                    {ListData.map(arrBond => {
+                    {ListData.map(objBond => {
                         return (
-                            // console.log(arrBond,' ___')
+                            // console.log(objBond,' ___')
                             <tr>
-                                {Object.values(arrBond).map((val, index) => {
-                                    let content
-
+                                {Object.entries(objBond).map(([key, val], index) => {
                                     if (index === 2) {
-                                        content = (
-                                            <Link to={`detales`} style={{ display: 'inline' }}>
-                                                {val}
-                                            </Link>
+                                        return (
+                                            <td>
+                                                <Link to={`/detales`} style={{ display: 'inline' }}>
+                                                    {val}
+                                                </Link>
+                                            </td>
+
                                         )
                                     }
                                     if (index === 5 || index === 6) {
-                                        content = val === null ? `${0}%` : (`${val}%`)
-                                    } else {
-                                        content = val
+                                        return (
+                                            <td> {val === null ? `${0}%` : (`${val}%`)} </td>
+                                        )
                                     }
-                                    return <td key={index}> {content}</td>
+                                    else {
+                                        return <td>{val}</td>
+                                    }
                                 })}
                             </tr>
                         )

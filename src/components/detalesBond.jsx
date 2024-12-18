@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 const detalesData = {
     "Котировка облигации, %": '',
     'Доходность': '',
@@ -13,6 +14,8 @@ const detalesData = {
 }
 
 export function DetalesBond() {
+    const { id } = useParams() //получаю id из URL;
+
 
     return (
         <>

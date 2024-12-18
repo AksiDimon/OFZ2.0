@@ -1,17 +1,8 @@
  import { ofzResponseMock } from "../../ofzResponseMock";
- export function calculateAge (arrOfzs) {
-//способ 1 сортирую от min до max
 
-    const  sortedYears = arrOfzs.map(ofz => ofz.endDate).sort();
-    //    console.log(sortedYears, '!!!!');
-    return {
-       
-        maxYearsToEnd: sortedYears.at(-1),
-        minYearsToEnd: sortedYears[0],
-    }  
-}
 
-//console.log(calculateAge(ofzResponseMock), '+++' )
+
+
 
 
 
