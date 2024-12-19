@@ -36,7 +36,7 @@ export function List() {
         fetchOfzBonds().then(val => setListData(val))
     }, [])
 
-    console.log(ListData, '👹')
+    // console.log(ListData, '👹')
     return (
         <div className={s.tableContainer}>
             <table className={s.table} style={{ width: '50vh' }}>

@@ -61,7 +61,7 @@ th {
     background-color: gray; 
     position: sticky; /* Фиксирует заголовки */
     top: 0; /* Фиксация у верхней границы при скролле */
-    z-index: 10; /* Приоритет отображения заголовков */
+    
 }
 
 
@@ -89,7 +89,7 @@ th {
     border: 1px solid #B39F7A;
     transform: translate(-50%, 50%);
     font-size: 10px;
-    z-index: 1; /* Понижаем слой точки */
+    z-index: 10;
 }
 
 
@@ -139,11 +139,12 @@ th {
     font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
     padding: 0px 8px 8px 8px;
     border-radius: 4px;
-    z-index: 0;
+    
 
     /*mess around */
     transition: all 0.3s ease-in-out; /* Плавная анимация */
     opacity: 0;
+    z-index: 10;
 }
 
 /* отрисовка при навидении над дточкой, курсором на точку */
@@ -151,7 +152,7 @@ th {
     
     opacity: 1;
     font-size: 10px;
-    z-index: 100;
+    
     display: block;
 }
 
@@ -216,6 +217,13 @@ th {
     box-shadow: 0 0 4px #000;
   }
 
+  .zoomableContent {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+}
+
   .bond {
     position: absolute;
     border-radius: 50%;
@@ -223,6 +231,7 @@ th {
     height: 4px;
     background: navy;
     transform: translate(-50%, 50%);
+    z-index: 10;
   }
 
   .bond::after {
@@ -245,6 +254,7 @@ th {
     right: 0;
     transform: translateY(0.5px);
     background-color: gainsboro;
+    z-index: 0;
   }
 
   .horizontalValue {
@@ -260,6 +270,7 @@ th {
     bottom: 0;
     background-color: gainsboro;
     transform: translateX(-0.5px);
+    z-index: 0;
   }
 
   .verticalValue {
