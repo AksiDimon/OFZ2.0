@@ -205,7 +205,7 @@
 import s from './list.module.css';
 import { fetchOfzBonds } from '../requests/fetchList';
 import { useState, useEffect, useRef } from 'react';
-import { computeStripAgeAndPercentQuotes } from '../calcsFuncs/calcsQuotes/computYears&%';
+
 export function ChartQuotesGpt() {
     const [ListData, setListData] = useState([]);
     const [selectionBox, setSelectionBox] = useState(null);

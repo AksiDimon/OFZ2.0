@@ -1,15 +1,26 @@
 import s from './list.module.css';
 import { fetchOfzBonds } from '../requests/fetchList';
-import { computeStripAgeAndPercentQuotes } from '../calcsFuncs/calcsQuotes/computYears&%';
 import { useState, useEffect, useRef } from 'react';
 import { Route } from 'react-router-dom';
+import { plusOneAge, getTodayDate, calculateLastDate, date2ms } from '../calcsFuncs/calcsQuotes/halperDates';
+import { generateHorizontalData, generateVerticalData } from '../calcsFuncs/calcsQuotes/printCordinates';
+
+
+
+const todayDate = getTodayDate();
+
 
 export function ChartQuotes() {
     const [ListData, setListData] = useState([])
+    const [restMap, setRestMap] = useState([])
     const [startPosition, setStartPosition] = useState(null)
     const [selectionBox, setSelectionBox] = useState(null);
-    const [increasedData, setIncreasedData] = useState({})
+    const [increasedData, setIncreasedData] = useState({});
 
+    const [calcsStrips, setCalcsStrips] = useState(null);
+    const [counterZoom, setCounterZoom] = useState(0); //стэйт для процентов по Y скольконулей должно быть после запятой.
+
+    console.log(calcsStrips, '😍', counterZoom)
     const divRef = useRef(null);
     useEffect(() => {
         fetchOfzBonds().then(data => {
@@ -29,88 +40,59 @@ export function ChartQuotes() {
             .then(data => {
                 console.log(data, 'Squeeze')
                 setListData(data)
+
+                const sortedDates = data.map(ofz => ofz.endDate).sort();
+                const sortedPercents = data.map(ofz => ofz.percent).sort((a, b) => a - b);
+
+
+                //вычисляет последнюю дату, начиная с текущей даты, которая больше или равна самой поздней дате в массиве.
+                const lastDate = calculateLastDate(todayDate, sortedDates, plusOneAge);
+                
+
+
+                setCalcsStrips({
+                    minDate: todayDate,
+                    maxDate: lastDate,
+                    minPercent: Math.floor(sortedPercents[0]),
+                    maxPercent: Math.ceil(sortedPercents.at(-1)),
+                })
+
+                setRestMap({
+                    minDate: todayDate,
+                    maxDate: lastDate,
+                    minPercent: Math.floor(sortedPercents[0]),
+                    maxPercent: Math.ceil(sortedPercents.at(-1)),
+                })
             })
     }, [])
 
 
-    if (ListData.length === 0) {
+    if (ListData.length === 0 || calcsStrips === null) {
         return <div>...Loading</div>
     }
 
-    const { points, horizontalData, verticalData } = computeStripAgeAndPercentQuotes(ListData)
-
-    console.log(computeStripAgeAndPercentQuotes(ListData), '👄')
-
-    // const sortedDates = ListData.map(ofz => ofz.endDate).sort();
-    // const sortedPercents = ListData.map(ofz => ofz.percent).sort((a, b) => a - b);
-
-    // const today = new Date();
-    // const todayDate = [today.getFullYear(), today.getMonth() + 1, today.getDate()]
-    //     .map(x => x.toString().padStart(2, '0'))
-    //     .join('-');
 
 
-    // function plusOneAge(date) {
-    //     const [year, month, day] = date.split('-').map(val => Number(val));
+    const points = ListData
+    .filter(obj => obj.percent >= calcsStrips.minPercent && obj.percent <= calcsStrips.maxPercent && obj.endDate >= calcsStrips.minDate && obj.endDate <= calcsStrips.maxDate )
+    .map(ofz => ({
+        ofz,
+        x: (date2ms(ofz.endDate) - date2ms(calcsStrips.minDate)) / (date2ms(calcsStrips.maxDate) - date2ms(calcsStrips.minDate)),
+        y: (ofz.percent - calcsStrips.minPercent) / (calcsStrips.maxPercent - calcsStrips.minPercent),
+    }));
 
-    //     return [year + 1, month, day]
-    //         .map(x => x.toString().padStart(2, '0'))
-    //         .join('-')
-    // }
-
-    // const lastDate = (() => {
-    //     let year = todayDate;
-    //     while (year < sortedDates.at(-1)) {
-    //         year = plusOneAge(year);
-    //     }
-    //     return year;
-    // })();
-
-    // const minDate = todayDate; // sortedDates[0];
-    // const maxDate = lastDate; // sortedDates.at(-1);
-
-    // const minPercent = Math.floor(sortedPercents[0]);
-    // const maxPercent = Math.ceil(sortedPercents.at(-1));
-
-    // const date2ms = date => {
-    //     const [y, m, d] = date.split("-").map(Number);
-    //     return +new Date(y, m - 1, d);
-    // };
-
-    // const points = ListData.map(ofz => ({
-    //     ofz,
-    //     x: (date2ms(ofz.endDate) - date2ms(minDate)) / (date2ms(maxDate) - date2ms(minDate)),
-    //     y: (ofz.percent - minPercent) / (maxPercent - minPercent),
-    // }));
-
-    // console.log(
-    //     { sortedDates, sortedPercents, points },
-    //     '***'
-    // )
-
-    // //данные для горизонтальной линии и %
-    // const generateHorizontalData = (minPercent, maxPercent) => {
-    //     const data = [];
-    //     for (let i = 0; i <= maxPercent - minPercent; i++) {
-    //         const percent = minPercent + i;
-    //         const y = (percent - minPercent) / (maxPercent - minPercent);
-    //         data.push({ percent, y });
-    //     }
-    //     return data;
-    // };
-    // const horizontalData = generateHorizontalData(minPercent, maxPercent)
+    console.log(
+        // { sortedDates, sortedPercents, points },
+        calcsStrips,
+        ListData,
+        points,
+        '***'
+    )
 
 
-    // //данне для вертикальной линии и годов
-    // const generateVerticalData = (minDate, maxDate, date2ms, plusOneAge) => {
-    //     const data = [];
-    //     for (let date = minDate, year = 0; date < plusOneAge(maxDate); date = plusOneAge(date), year += 1) {
-    //         const x = (date2ms(date) - date2ms(minDate)) / (date2ms(maxDate) - date2ms(minDate));
-    //         data.push({ year, x });
-    //     }
-    //     return data;
-    // };
-    // const verticalData = generateVerticalData(minDate, maxDate, date2ms, plusOneAge);
+    const horizontalData = generateHorizontalData(calcsStrips.minPercent, calcsStrips.maxPercent, counterZoom)
+
+    const verticalData = generateVerticalData(calcsStrips.minDate, calcsStrips.maxDate, date2ms, plusOneAge);
 
 
 
@@ -125,7 +107,7 @@ export function ChartQuotes() {
     function getCordinates(event) {
         const rect = divRef.current.getBoundingClientRect();
 
-        console.log(rect, '🎃')
+        // console.log(rect, '🎃')
         const x = (event.clientX - rect.left) / rect.width
         const y = (event.clientY - rect.top) / rect.height
         return { x, y }
@@ -153,43 +135,104 @@ export function ChartQuotes() {
     }
 
 
+
     function handlePointerUp(event) {
-        const position = getCordinates(event)
+        const endPoint = getCordinates(event)
 
-        //данные выделеного окна
+        //данные выделеного окна 
         const { x, y, width, height } = selectionBox;
+        const { minDate, maxDate, minPercent, maxPercent } = calcsStrips;
+
+        // 2030     ↓                                   2050
+        // |--------×-----------------------------------|
+        // 0px      100px                               500px
+
+        // 2030 + (2050 -2030) × 0.2 = 2034
 
 
-        const scaleX = 1 / width; // Увеличение по горизонтали.
-        const scaleY = 1 / height; // Увеличение по вертикали.
 
-        // Сдвиг содержимого относительно выделенной области.
-        const translateX = -(x * divRef.current.offsetWidth);
-        const translateY = -(y * divRef.current.offsetHeight);
+        // Преобразуем даты в миллисекунды
+        const minDateMs = date2ms(minDate);
+        const maxDateMs = date2ms(maxDate);
+        //вычисление для годов по оси x,  ms умножаен на проценты (но это не проценты. а дробь 0.185 = 18.5%)
+        const minDateNew = minDateMs + (maxDateMs - minDateMs) * x
+        const maxDateNew = minDateMs + (maxDateMs - minDateMs) * (x + width);
 
-        setIncreasedData({ scaleX, scaleY, translateX, translateY });
+
+        // Новые границы по X (даты)
+        const minDateAfter = new Date(minDateNew).toISOString().split('T')[0];
+        const maxDateAfter = new Date(maxDateNew).toISOString().split('T')[0];
+
+
+        // // Новые границы по Y (проценты)
+        let newMinPercent = minPercent + (maxPercent - minPercent) *  (1 - (y + height));
+        let newMaxPercent = minPercent + (maxPercent - minPercent) * (1 - y)
+
+        setCalcsStrips((prev) => {
+            return {
+                
+                minDate: minDateAfter,
+                maxDate: maxDateAfter,
+                minPercent: newMinPercent,
+                maxPercent: newMaxPercent,
+            }
+        })
+
+        // const sortedDates = ListData.map(ofz => ofz.endDate).sort();
+        // const lastDate = calculateLastDate(todayDate, sortedDates, plusOneAge);
+         console.log(calcsStrips, '🥲')
+
         setStartPosition(null);
-
-
     }
 
+
+function handleRestMap () {
+     setCalcsStrips(restMap)
+     setCounterZoom(0) //сбрасываю точки после запятой в процентах, так как это не сделать здесь, они останутся, при сбрасывании. 
+}
 
 
     return (
         <>
+        <button
+            onClick={handleRestMap}
+            > rest</button>
             <div className={s.grid}
-
+             
                 // onPointerDown = {handlePointerDown}
                 // onPointerUp = {handlePointerUp}
                 // onPointerMove = {handlePointerMove}
                 ref={divRef}
             >
+                
+                {/* Горизонтальные линии и значения процентов */}
+                {horizontalData.map(({ percent, y }, index) => (
+                    <div key={index}>
+                        <span className={s.horizontalValue} style={{ bottom: `${y * 100}%` }}>
+                            {percent}%
+                        </span>
+                        <div className={s.horizontalLine} style={{ bottom: `${y * 100}%` }} />
+                    </div>
+                ))}
+
+                {/* Вертикальные линии и значения годов */}
+                {verticalData.map(({ year, x, date}, index) => (
+                    <div key={index}>
+                        <span className={s.verticalValue} style={{ left: `${x * 100}%` }}>
+                            {year}<br />
+                            <span style={{ fontSize: '7px', transform: 'rotate(-40deg)',display: 'inline-block' }}>{date}</span>
+                        </span>
+                        <div className={s.verticalLine} style={{ left: `${x * 100}%` }} />
+                    </div>
+                ))}
+
                 <div
                     className={s.zoomableContent}
-                    style={{
-                        transform: `scale(${increasedData.scaleX || 1}, ${increasedData.scaleY || 1}) translate(${increasedData.translateX || 0}px, ${increasedData.translateY || 0}px)`,
-                        transformOrigin: '0 0',
-                    }}
+                    onClick = {() => setCounterZoom((prev) => prev === 3 ? prev : prev + 1) }
+                    // style={{
+                    //     transform: `scale(${increasedData.scaleX || 1}, ${increasedData.scaleY || 1}) translate(${increasedData.translateX || 0}px, ${increasedData.translateY || 0}px)`,
+                    //     transformOrigin: '0 0',
+                    // }}
                     onPointerDown={handlePointerDown}
                     onPointerMove={handlePointerMove}
                     onPointerUp={handlePointerUp}
@@ -208,34 +251,14 @@ export function ChartQuotes() {
                                     <h3>{obj.ofz.name}</h3>
                                     <div>{`Лет до погаш: ${obj.ofz.yearsToEnd}`}</div>
                                     <div>{`Доходнсть: ${obj.ofz.percent}%`}</div>
+                                    <div> {`Дата погаш. ${obj.ofz.endDate}`}</div>
                                 </div>
                                 <span className={s.nameOfPoint} >{obj.ofz.name}</span>
                             </span>
                         )
-
                     })}
-
-
                 </div>
-                {/* Горизонтальные линии и значения процентов */}
-                {horizontalData.map(({ percent, y }) => (
-                    <div key={percent}>
-                        <span className={s.horizontalValue} style={{ bottom: `${y * 100}%` }}>
-                            {percent}%
-                        </span>
-                        <div className={s.horizontalLine} style={{ bottom: `${y * 100}%` }} />
-                    </div>
-                ))}
 
-                {/* Вертикальные линии и значения годов */}
-                {verticalData.map(({ year, x }) => (
-                    <div key={year}>
-                        <span className={s.verticalValue} style={{ left: `${x * 100}%` }}>
-                            {year}
-                        </span>
-                        <div className={s.verticalLine} style={{ left: `${x * 100}%` }} />
-                    </div>
-                ))}
                 {startPosition !== null && (
                     // <div style={{background: 'red', height: '4px', width: '4px', position: 'absolute', left: `${startPosition.x * 100}%`, top: `${startPosition.y * 100}%`, transform: 'translate(-50%, -50%)'}} ></div>
                     <div
@@ -251,8 +274,6 @@ export function ChartQuotes() {
                         }}
                     ></div>
                 )}
-
-
                 <div style={{ position: 'absolute', top: '110%', left: '40%', whiteSpace: 'nowrap' }} > Лет до погашения </div>
                 <div style={{ position: 'absolute', left: '-120px', top: '45%', transform: 'rotate(-90deg)' }} > Доходность % </div>
             </div>
@@ -262,68 +283,3 @@ export function ChartQuotes() {
 }
 
 
-
-
-// return (
-//     <div className={s.grid} ref={divRef}>
-//         <div
-//             className={s.zoomableContent}
-//             style={{
-//                 transform: `scale(${increasedData.scaleX || 1}, ${increasedData.scaleY || 1}) translate(${increasedData.translateX || 0}px, ${increasedData.translateY || 0}px)`,
-//                 transformOrigin: '0 0',
-//             }}
-//             onPointerDown={handlePointerDown}
-//             onPointerMove={handlePointerMove}
-//             onPointerUp={handlePointerUp}
-//         >
-//             {points.map(obj => (
-//                 <span
-//                     className={s.printPoint}
-//                     style={{
-//                         left: `${obj.x * 100}%`,
-//                         bottom: `${obj.y * 100}%`,
-//                     }}
-//                 >
-//                     <div className={s.printInformation}>
-//                         <h3>{obj.ofz.name}</h3>
-//                         <div>{`Лет до погашения: ${obj.ofz.yearsToEnd}`}</div>
-//                         <div>{`Доходность: ${obj.ofz.percent}%`}</div>
-//                     </div>
-//                     <span className={s.nameOfPoint}>{obj.ofz.name}</span>
-//                 </span>
-//             ))}
-
-//             {horizontalData.map(({ percent, y }) => (
-//                 <div key={percent}>
-//                     <span className={s.horizontalValue} style={{ bottom: `${y * 100}%` }}>
-//                         {percent}%
-//                     </span>
-//                     <div className={s.horizontalLine} style={{ bottom: `${y * 100}%` }} />
-//                 </div>
-//             ))}
-
-//             {verticalData.map(({ year, x }) => (
-//                 <div key={year}>
-//                     <span className={s.verticalValue} style={{ left: `${x * 100}%` }}>
-//                         {year}
-//                     </span>
-//                     <div className={s.verticalLine} style={{ left: `${x * 100}%` }} />
-//                 </div>
-//             ))}
-//         </div>
-//         {startPosition !== null && (
-//             <div
-//                 style={{
-//                     position: 'absolute',
-//                     left: `${selectionBox.x * 100}%`,
-//                     top: `${selectionBox.y * 100}%`,
-//                     width: `${selectionBox.width * 100}%`,
-//                     height: `${selectionBox.height * 100}%`,
-//                     backgroundColor: 'rgba(0, 123, 255, 0.1)',
-//                     border: '1px dashed #007bff',
-//                     pointerEvents: 'none',
-//                 }}
-//             ></div>
-//         )}
-//     </div>
-// );
