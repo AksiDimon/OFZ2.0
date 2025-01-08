@@ -1,4 +1,4 @@
-import { getTodayDate, plusOneAge, daysInMonth } from './halperDates';
+import { getTodayDate, plusOneAge, yearsToMaturityUpdate } from './halperDates';
 import { date2ms } from './halperDates';
 
 //данные для горизонтальной линии и %
@@ -86,7 +86,7 @@ export const generateHorizontalData = (minPercent, maxPercent, counterZoom) => {
     for (let i = 0; i < steps; i++) {
       const percent = start + i * step;
       result.push({
-        percent: percent.toFixed(precision + 1),
+        percent: percent.toFixed(precision),
         y: (percent - minPercent) / (maxPercent - minPercent),
       });
     }
@@ -116,7 +116,7 @@ export const generateHorizontalData = (minPercent, maxPercent, counterZoom) => {
 };
 
 
-export const generateVerticalData = (minDate, maxDate, date2ms) => {
+export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => {
   const todayDate = getTodayDate(); // Например, '2024-12-23'
   // const todayDate = "2024-06-23"
   //    const todayDate = "2024-12-23"
@@ -124,14 +124,25 @@ export const generateVerticalData = (minDate, maxDate, date2ms) => {
 
   const data = [];
 
-  // Добавляем начальную дату
-  data.push({
+  // Добавляем начальную дату 
+  if(counterZoom === 1) {
+    data.push({
     year: Number(minDate.split('-')[0]),
     x:
       (date2ms(minDate) - date2ms(minDate)) /
       (date2ms(maxDate) - date2ms(minDate)),
     date: minDate,
   });
+
+  data.push({
+    year: Number(maxDate.split('-')[0]),
+    x:
+      (date2ms(maxDate) - date2ms(minDate)) /
+      (date2ms(maxDate) - date2ms(minDate)),
+    date: maxDate,
+  });
+  }
+  
 
   const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
   const currentYearTodayDate = [minYear, todayMonth, todayDay]
@@ -164,6 +175,7 @@ export const generateVerticalData = (minDate, maxDate, date2ms) => {
     }
 
     data.push({
+        // year:  yearsToMaturityUpdate(todayDate, nextDate),
       year: currentYear,
       x:
         (date2ms(nextDate) - date2ms(minDate)) /
@@ -174,7 +186,7 @@ export const generateVerticalData = (minDate, maxDate, date2ms) => {
     currentYear++;
   }
 
-  // // Добавляем maxDate, если она ещё не была добавлена
+  // Добавляем maxDate, если она ещё не была добавлена
 //   if (data.length === 0 || data.at(-1).date !== maxDate) {
 //     data.push({
 //       year: Number(maxDate.split('-')[0]),
@@ -223,20 +235,18 @@ export const generateVerticalData = (minDate, maxDate, date2ms) => {
     console.log(filter, '!!!@👹');
     return result;
   }
-  
+
   console.log(data,
     data.filter((obj, i) => i !== 0  && i !== obj.length - 1),
+    counterZoom,
      '!!!@!');
 
-  return data;
+// if(counterZoom > 1) {
+// return data.filter((obj, i) => i !== 1  && i !== obj.length - 2)
+// }
+return data
 };
 
-// console.log(generateVerticalData("2028-03-04", "2034-08-18", date2ms), '🥲')
-
-// const todayDate = "2024-06-23";
-// const minDate = "2028-03-04";
-// const maxDate = "2032-08-18";
-// console.log(generateVerticalData(minDate, maxDate, date2ms), '🥲')
 
 // Функция для добавления дат по месяцам
 const generateMonthlyData = (minDate, maxDate, date2ms) => {
@@ -281,8 +291,7 @@ const generateMonthlyData = (minDate, maxDate, date2ms) => {
 
 // Функция для добавления дат по дням.
 function generateDaysData(minDate, maxDate, date2ms) {
-//   const todayDate = getTodayDate();
-//   const [todayMonth, todayDay] = todayDate.split('-').slice(1).map(Number);
+
   const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
 
   const data = [];

@@ -4,6 +4,8 @@ import { List } from "./components/list";
 import { DetalesBond } from './components/detalesBond';
 import { ChartQuotes } from './components/chartQuotes';
 import { ChartQuotesGpt } from './components/gptQuotes';
+import { Provider } from 'react-redux'
+import { store } from './redux/store';
 
 const router = createBrowserRouter([
   {
@@ -20,9 +22,11 @@ function App() {
   return (
     <div  >
       {/* <ChartQuotesGpt/> */}
-      
-      <ChartQuotes/>
+      <Provider store = {store}>
+        <ChartQuotes/>
       <RouterProvider router = {router} />
+      </Provider>
+      
      {/* Project
      <List/> */}
     </div>
