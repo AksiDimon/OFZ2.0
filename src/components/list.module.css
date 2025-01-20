@@ -284,4 +284,71 @@ th {
     position: absolute;
     bottom: -16px;
     transform: translateY(100%) translateX(-50%);
+    text-align: center;
   }
+
+
+
+
+
+
+                        /*_____________________________________________*/
+/* Стили для headers где линки к разным облигациям*/
+/* Контейнер для горизонтальной прокрутки */
+.barContainer {
+  display: flex;
+  width: 100%;
+  background-color: #fce4c5; /* Тёплый пастельный цвет */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* Горизонтальная прокрутка */
+  white-space: nowrap; /* Запрет на перенос строк */
+  scrollbar-width: thin; /* Уменьшение ширины скроллбара (для Firefox) */
+  scrollbar-color: #e4b381 #fce4c5; /* Цвета скроллбара (для Firefox) */
+  margin: 20px 0;
+}
+
+/* Стили для скроллбара (Chrome, Edge, Safari) */
+.barContainer::-webkit-scrollbar {
+  height: 8px; /* Высота скроллбара */
+}
+
+.barContainer::-webkit-scrollbar-track {
+  background: #fce4c5; /* Цвет трека */
+}
+
+.barContainer::-webkit-scrollbar-thumb {
+  background: #e4b381; /* Цвет "ползунка" */
+  border-radius: 4px;
+}
+
+/* Стили для элементов внутри */
+.headName {
+  flex: 1 0 auto; /* Элементы не сжимаются */
+  text-align: center;
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #5a3c16; /* Глубокий теплый коричневый */
+  background-color: #f8d3a6; /* Светло-оранжевый */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-right: 1px solid #e4b381; /* Линия между элементами */
+}
+
+/* Убираем границу у последнего элемента */
+.headName:last-child {
+  border-right: none;
+}
+
+/* Ховер эффект */
+.headName:hover {
+  background-color: #e4b381;
+  color: #ffffff;
+}
+
+/* Стили для активного элемента */
+.headName.active {
+  background-color: #d99e64;
+  color: white;
+}

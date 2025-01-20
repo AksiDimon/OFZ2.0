@@ -1,0 +1,65 @@
+.grafik{
+    width: calc(100% - 120px);
+    height: 500px;
+    margin: 100px;
+    position: relative;
+    box-shadow: 0 0 20px #000;
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+.grid {
+    top: 50px;
+    left: -50px;
+    width: calc(100% - 120px);
+    height: 400px;
+    margin: 100px;
+    position: relative;
+    box-shadow: 0 0 7px #000;
+    background-color: aliceblue;
+    
+    
+  }
+
+  .zoomableContent {
+    position: absolute;
+    /* top: 50%;
+    left: 50%; */
+    /* transform: translate(10%, 50%); */
+    width: 100%;
+    height: 100%;
+    /* will-change: transform; */
+}
+
+.printPoint {
+    position: absolute;
+    border-radius: 5px;
+    background-color: blue;
+    width: 2px;
+    height: 2px;
+}
+
+.horizontalValue {
+    font-size: large, 10px;
+    position: absolute;
+    left: calc(100% + 5px); 
+    transform: translateY(50%) translateX(100%);
+  }
+
+  .horizontalLine {
+    position: absolute;
+    height: 1px;
+    left: 0;
+    right: 0;
+    transform: translateY(0.5px);
+    background-color: gainsboro;
+    
+  }
+
+
+  .verticalValue {
+    position: absolute;
+    bottom: -16px;
+    transform: translateY(100%) translateX(-50%);
+    text-align: center;
+  }

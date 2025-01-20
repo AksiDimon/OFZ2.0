@@ -3,6 +3,7 @@ import {getCouponYield} from '../calcsFuncs/getCouponYield.js';
 
 // 1) достаю данные и привожу их в порядок давая каждому значению ключ
 export function transformResponse({ columns, data }) {
+  console.log({ columns, data }, 'QWER')
   const arr = [];
 
   for (const values of data) {
@@ -41,7 +42,7 @@ for (let bond in obj) {
       'name':'-',
       'endDate' : '-',
       'yearsToEnd': '?',
-      'yield': '-',
+      'percent': '-',
       'couponPersent' : '-',
       'getCouponYield' : '?',
       'marketPrice' : '-',
@@ -59,7 +60,7 @@ for (let bond in obj) {
   myObj['name'] = obj[bond].SHORTNAME  //Имя
   myObj['endDate'] = obj[bond].MATDATE //Погашение
   myObj['yearsToEnd'] = yearsToMaturity(obj[bond].MATDATE) // Лет до погашения
-  myObj['yield'] = obj[bond].YIELD //Доходность %
+  myObj['percent'] = obj[bond].YIELD //Доходность %
   myObj['couponPersent'] =  obj[bond].COUPONPERCENT //Год. куп. дох.
   myObj['getCouponYield'] =  getCouponYield(obj[bond].MARKETPRICE, obj[bond].COUPONPERCENT) //Куп. дох. посл.
   myObj['marketPrice'] = obj[bond].MARKETPRICE //Цена
@@ -107,4 +108,7 @@ for(const obj of result) {
 return result
 
 }
+
+
+
 

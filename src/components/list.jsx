@@ -2,6 +2,7 @@ import s from './list.module.css'
 import { fetchOfzBonds, fetchList, headers, durationReqest } from '../requests/fetchList.js'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import { ChartQuotes } from './chartQuotes';
 // import { calculateAge } from '../calcsFuncs/calcsQuotes/calculateAge';
 
 
@@ -25,19 +26,12 @@ const headerNamesRUS = [
 ];
 const headerNamesEN = ['№', 'SECID', 'SHORTNAME', 'MATDATE', 'YIELDATPREVWAPRICE', 'Profitability', 'COUPONPERCENT', 'PREVWAPRICE', 'ISSUESIZE', 'COUPONVALUE', 'COUPONPERIOD', 'ACCRUEDINT', 'DURATION', 'NEXTCOUPON', 'ISIN', 'LOTVALUE']
 
-export function List() {
-    // const [headerNames, setHeaderNames] = useState([]);
+export function List({ListData}) {
 
-    const [ListData, setListData] = useState([])
-    const [durationReqest, setDurationReqest] = useState()
-    useEffect(() => {
-        // headers().then(data => setHeaderNames(data))
-        // durationReqest().then(val => setDurationReqest(val))
-        fetchOfzBonds().then(val => setListData(val))
-    }, [])
 
-    // console.log(ListData, '👹')
+
     return (
+        <>
         <div className={s.tableContainer}>
             <table className={s.table} style={{ width: '50vh' }}>
                 <thead>
@@ -55,6 +49,7 @@ export function List() {
                 </thead>
                 <tbody>
                     {ListData.map(objBond => {
+                        // console.log(Object.entries(objBond), '🤩')
                         return (
                             // console.log(objBond,' ___')
                             <tr>
@@ -89,6 +84,8 @@ export function List() {
                 </tbody>
             </table>
         </div>
+        </>
+        
     );
 
 

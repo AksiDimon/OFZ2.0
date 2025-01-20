@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchOfzBonds } from '../requests/fetchList';
-import { plusOneAge, getTodayDate, calculateLastDate, date2ms, filterPointsWithinBorder, halperRestMap } from '../calcsFuncs/calcsQuotes/halperDates';
+import { plusOneAge, getTodayDate, calculateLastDate, date2ms,calcEmphasizeSquare, filterPointsWithinBorder, halperRestMap } from '../calcsFuncs/calcsQuotes/halperDates';
 
 
 
@@ -14,26 +14,21 @@ export const fetchListData = createAsyncThunk(
       const ofzsSqueezeData = data
         .map((obj) => {
           return {
-            name: obj.name,
-            percent: obj.yield,
-            endDate: obj.endDate,
-            yearsToEnd: obj.yearsToEnd,
+            // name: obj.name,
+            // endDate: obj.endDate,
+            // yearsToEnd: obj.yearsToEnd,
+            ...obj,
+            // percent: obj.yield,
           };
         })
         .filter(({ name }) => name.startsWith('ОФЗ 26'))
         .filter(({ percent }) => percent > 0);
-
         return ofzsSqueezeData;
     });
   }
 );
 
- const todayDate  = createAsyncThunk(
-    'chartQuotes/todayDate',
-    (_, no) => {
-        return getTodayDate();
-    }
- );
+
 
 
 
@@ -42,8 +37,8 @@ const initialState = {
     status: 'idle', // idle | loading | succeeded | failed
     error: null, // Для хранения ошибок
     calcsStrips: null,
-    todayDate: '',
-    filterPointsWithinBorder: [],
+    // selectionBox: {}, //кладу сюда значение координат в px по X,Y width, height
+    // filterPointsWithinBorder: [],
     
 };
 
@@ -53,29 +48,33 @@ export const chartQuotesSlice = createSlice({
   initialState,
   reducers: {
     setCalcsStrips(state, action) {
-      state.calcsStrips = action.payload;
+     // state.calcsStrips = action.payload;
       // как было бы лучше
       // const { x0, y0, x1, y1 } = action.payload;
       //                                                 10% 20% 60% 80%
       // state.calcsStrips = update(state.calcsStrips ?? halperRestMap(ListData, todayDate), { x0, y0, x1, y1 });
+    //   console.log(action.payload, '😡')
+      state.calcsStrips =  calcEmphasizeSquare(state.calcsStrips ?? halperRestMap(state.ListData, getTodayDate()), action.payload)
     },
     setRestMap(state) {
         state.calcsStrips = null;
     },
+    // setSelectionBox(state, action) {
+    //     console.log(action.payload, '🤯')
+    //     state.selectionBox = action.payload;
+    // },
     setFilterPointsWithinBorder(state) {
         state.filterPointsWithinBorder = filterPointsWithinBorder(state.ListData, state.calcsStrips)
     }
+
   },
   extraReducers: (builder) => {
     builder
-    .addCase(todayDate.fulfilled, (state, action) => {
-        state.todayDate = action.payload; // Сохраняем текущую дату в state
-    })
     .addCase(fetchListData.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(fetchListData.fulfilled, (state, action) => {
-        console.log('ListData saved to store:', action.payload);
+        // console.log('ListData saved to store:', action.payload);
         state.status = 'succeeded';
         state.ListData = action.payload; // Сохраняем данные в state
       })

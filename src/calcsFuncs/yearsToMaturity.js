@@ -1,4 +1,5 @@
 export function yearsToMaturity (matDate) {
+    if(matDate === null) return '-'
     const yearNow = new Date().getFullYear();
     const monthNow = new Date().getMonth() + 1;
    // console.log(yearNow,monthNow)
@@ -12,7 +13,7 @@ export function yearsToMaturity (matDate) {
     const gapRestMonth = finishMonth - monthNow;
 
     const yearsToMaturity = gapRestYear + (gapRestMonth / 12);
-    
+  //  console.log(yearsToMaturity.toFixed(1), '№№№№№№№')
     return yearsToMaturity.toFixed(1)
 }
 

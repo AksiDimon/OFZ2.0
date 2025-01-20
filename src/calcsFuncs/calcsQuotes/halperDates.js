@@ -62,60 +62,70 @@ export function date2ms (date) {
 
 }
 
-//функция для подсчета остатка лет в десятичной дроби.
-export function yearsToMaturityUpdate(today, maturityDate) {
-    const  todayMs = date2ms(today);
-    const endDayMs = date2ms(maturityDate);
 
-    const difference = endDayMs - todayMs;
-
-    const daysDifference = difference / (1000 * 60 * 60 * 24);
-
-    const result = daysDifference / 365;
-    if(result % 1 === 0) {
-      return result
+//функция для убирания 0 после запятой в годах в десятичной дроби
+export function integerNumber (num) {
+    if(num === 0 || num === '0') return num
+    console.log(num, '👿')
+    const arr = num.split('.');
+    // if(arr[1].length > 1) return num
+    console.log(arr, arr[1][0])
+    if(Number(arr[1][0]) === 0) {
+      return arr[0]
     }
+    return num
+  }
 
-    // //достаю первуюцифру после запятой
-    // const checkFraction1 = Number(result.toString().split('.')[1][0]);
-    // const checkFraction2 = Number(result.toString().split('.')[1][1])
-    // console.log(result, checkFraction1, checkFraction2)
+  //функция подсчета до конца от сегодняшний даты до любой в будущем, возвращает в десятичной дроби.
+export function calculateDecimalYears(todayDay, endDay, counterZoom) {
+    if(todayDay === endDay) return 0
+    // Преобразуем строки в объекты Date
+    const startDate = new Date(todayDay);
+    const endDate = new Date(endDay);
+  
+    // Получаем разницу в днях между двумя датами
+    const diffInMs = endDate - startDate;
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+  
+    // Функция для определения количества дней в году
+    const getDaysInYear = (year) => (new Date(year, 11, 31) - new Date(year, 0, 0)) / (1000 * 60 * 60 * 24);
+  
+    // Рассчитываем полные годы между датами
+    const startYear = startDate.getFullYear();
+    const endYear = endDate.getFullYear();
+  
+    let remainingDays = diffInDays;
+    let fullYears = 0;
+  
+    for (let year = startYear; year < endYear; year++) {
+      const daysInYear = getDaysInYear(year);
+      if (remainingDays >= daysInYear) {
+        fullYears++;
+        remainingDays -= daysInYear;
+      } else {
+        break;
+      }
+    }
+  
+    // Вычисляем дробную часть, представляющую месяцы
+    const currentYearDays = getDaysInYear(startYear + fullYears);
+    const decimalPart = remainingDays / currentYearDays;
+
+
+    // Итоговый результат
+    const result = fullYears + decimalPart;
+    if(counterZoom === 3) {
+      return result.toFixed(2)
+    }
     
-    // if(checkFraction1 > 0 && checkFraction2 === 0) {
-    //  return result.toFixed(1);
-    // }
-    // if(checkFraction1 > 0 && checkFraction2 > 0) {
-    //   return result.toFixed(2)
-    // }
-    // //  return result.toFixed(0)
-      // Извлекаем дробную часть
-  const fraction = result.toString().split('.')[1]; // Берем дробную часть
-  const firstDigit = Number(fraction[0]); // Первая цифра после запятой
-  const secondDigit = Number(fraction[1] || 0); // Вторая цифра после запятой (или 0, если ее нет)
-
-  console.log(result, firstDigit, secondDigit, 'QQ'); // Для отладки
-
-  if(firstDigit === 0 && secondDigit === 0) {
-    return result.toFixed(0)
+    return result.toFixed(1); 
   }
-  if (firstDigit > 1 && secondDigit === 0) {
-      // Если первая цифра > 1, а вторая = 0, оставляем 1 знак после запятой
-      return result.toFixed(1);
-  } else if (firstDigit > 1 && secondDigit > 0) {
-      // Если обе цифры больше 0, оставляем 2 знака после запятой
-      return result.toFixed(2);
-  } else {
-      // Если первая цифра не подходит под условия, оставляем 1 знак после запятой
-      return result.toFixed(1);
-  }
-}
-
-console.log(yearsToMaturityUpdate('2024-12-27', '2026-12-27'), 'UPDATE')
 
 
 
 
 export function halperRestMap(arr, todayDate) {
+    console.log({arr, todayDate})
 
     const sortedDates = arr.map(ofz => ofz.endDate).sort();
     const sortedPercents = arr.map(ofz => ofz.percent).sort((a, b) => a - b);
@@ -146,8 +156,9 @@ return listData.filter(
 }
 
 // оборачиваю вычисления в функции handlePointerUp  созданная в компоненте.
-export function calcEmphasizeSquare ( calcsStrips, sizeDiv) {
-    const { x, y, width, height } = sizeDiv;
+export function calcEmphasizeSquare ( calcsStrips, selectionBox) {
+    console.log(calcsStrips, selectionBox, '^^^')
+    const { x, y, width, height } = selectionBox;
     const { minDate, maxDate, minPercent, maxPercent } = calcsStrips;
 
      // 2030     ↓                                   2050

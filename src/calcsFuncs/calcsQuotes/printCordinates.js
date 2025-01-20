@@ -1,4 +1,4 @@
-import { getTodayDate, plusOneAge, yearsToMaturityUpdate } from './halperDates';
+import { getTodayDate, plusOneAge, yearsToMaturityUpdate, calculateDecimalYears, integerNumber} from './halperDates';
 import { date2ms } from './halperDates';
 
 //данные для горизонтальной линии и %
@@ -78,8 +78,31 @@ import { date2ms } from './halperDates';
 //     return data;
 // };
 
+
+
+
+// функция определяет количество цифр после запятой в числе
+function digitAfterComma(minPercent, maxPercent) {
+  const difference = maxPercent - minPercent;
+  if(difference >= 0 && difference <= 3) {
+    return 3
+  }
+  if(difference > 3 && difference < 5) {
+    return 2
+  }
+  if(difference >= 5 && difference <= 11 ) {
+    return 1
+  }
+  else {
+    return 0
+  }
+}
+
 //gptVersion
-export const generateHorizontalData = (minPercent, maxPercent, counterZoom) => {
+export const generateHorizontalData = (minPercent, maxPercent) => {
+
+  const fractionDigits = digitAfterComma(minPercent, maxPercent); // определяет количество цифр после запятой в числе
+
   const calculateData = (start, end, steps, precision) => {
     const result = [];
     const step = (end - start) / (steps - 1); // Равномерное деление диапазона
@@ -98,20 +121,16 @@ export const generateHorizontalData = (minPercent, maxPercent, counterZoom) => {
     minPercent,
     maxPercent,
     Math.ceil(maxPercent - minPercent) + 1,
-    counterZoom
+    fractionDigits
   );
 
   // Пересчёт, если точек меньше 6
   if (data.length < 6) {
-    data = calculateData(minPercent, maxPercent, 6, counterZoom);
+    data = calculateData(minPercent, maxPercent, 6, fractionDigits);
   }
-  // if (data.length < 2) {
-  //     data = calculateData(minPercent, maxPercent, 4, 3);
-  // }
-  // if (data.length = ) {
-  //     data = calculateData(minPercent, maxPercent, 6, 2);
-  // }
-  // console.log(data,counterZoom, '😎')
+  if (data.length > 7) {
+    data = calculateData(minPercent, maxPercent, 7, fractionDigits)
+  }
   return data;
 };
 
@@ -123,9 +142,9 @@ export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => 
   const [todayMonth, todayDay] = todayDate.split('-').slice(1).map(Number);
 
   const data = [];
-
+  let isIncreace = false
   // Добавляем начальную дату 
-  if(counterZoom === 1) {
+  if(!isIncreace) {
     data.push({
     year: Number(minDate.split('-')[0]),
     x:
@@ -133,14 +152,16 @@ export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => 
       (date2ms(maxDate) - date2ms(minDate)),
     date: minDate,
   });
+  isIncreace = true;
 
-  data.push({
-    year: Number(maxDate.split('-')[0]),
-    x:
-      (date2ms(maxDate) - date2ms(minDate)) /
-      (date2ms(maxDate) - date2ms(minDate)),
-    date: maxDate,
-  });
+  // data.push({
+  //   // year: Number(maxDate.split('-')[0]),
+  //   year: calculateDecimalYears(todayDate, maxDate),
+  //   x:
+  //     (date2ms(maxDate) - date2ms(minDate)) /
+  //     (date2ms(maxDate) - date2ms(minDate)),
+  //   date: maxDate,
+  // });
   }
   
 
@@ -217,9 +238,9 @@ export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => 
       return Object.values(obj).length !== 3 && obj.x > 0;
     });
     const result = [
-    //   fusionYearsAndMonth.at(0),
+
       ...filter,
-    //   fusionYearsAndMonth.at(-1),
+
     ];
 
     // if (data.length < 3) {
@@ -232,20 +253,125 @@ export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => 
     //       return fusionMonthAndDays;
       
     // }
-    console.log(filter, '!!!@👹');
+    // console.log(filter, '!!!@👹');
     return result;
   }
 
-  console.log(data,
-    data.filter((obj, i) => i !== 0  && i !== obj.length - 1),
-    counterZoom,
-     '!!!@!');
+  // console.log(data,
+  //   data.filter((obj, i) => i !== 0  && i !== obj.length - 1),
+  //   counterZoom,
+  //    '!!!@!');
 
 // if(counterZoom > 1) {
 // return data.filter((obj, i) => i !== 1  && i !== obj.length - 2)
 // }
 return data
 };
+
+
+//функция с годами в десятичной дроби.
+// export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => {
+//   const todayDate = getTodayDate(); // Например, '2024-12-23'
+//   // const todayDate = "2024-06-23"
+//   //    const todayDate = "2024-12-23"
+//   const [todayMonth, todayDay] = todayDate.split('-').slice(1).map(Number);
+
+//   const data = [];
+
+//   // Добавляем начальную дату 
+//   if(counterZoom === 1) {
+//     data.push({
+//     // year: Number(minDate.split('-')[0]),
+//     year: integerNumber(calculateDecimalYears(todayDate, minDate)),
+//     x:
+//       (date2ms(minDate) - date2ms(minDate)) /
+//       (date2ms(maxDate) - date2ms(minDate)),
+//     date: minDate,
+//   });
+
+//   // data.push({
+//   //   // year: Number(maxDate.split('-')[0]),
+//   //   year: calculateDecimalYears(todayDate, maxDate),
+//   //   x:
+//   //     (date2ms(maxDate) - date2ms(minDate)) /
+//   //     (date2ms(maxDate) - date2ms(minDate)),
+//   //   date: maxDate,
+//   // });
+//   }
+  
+
+//   const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
+//   const currentYearTodayDate = [minYear, todayMonth, todayDay]
+//     .map((x) => x.toString().padStart(2, '0'))
+//     .join('-');
+// // console.log(currentYearTodayDate)
+//   // Если текущая дата (месяц/день) в этом году попадает в диапазон, добавляем её
+//   if (
+//     date2ms(currentYearTodayDate) > date2ms(minDate) && date2ms(currentYearTodayDate) < date2ms(maxDate)
+//   ) {
+//     data.push({
+//       // year: minYear,
+//       year: calculateDecimalYears(todayDate,currentYearTodayDate ),
+//       x:
+//         (date2ms(currentYearTodayDate) - date2ms(minDate)) /
+//         (date2ms(maxDate) - date2ms(minDate)),
+//       date: currentYearTodayDate,
+//     });
+//   }
+
+//   // Переходим к следующему году
+//   let currentYear = minYear + 1;
+//   while (true) {
+//     const nextDate = [currentYear, todayMonth, todayDay]
+//       .map((x) => x.toString().padStart(2, '0'))
+//       .join('-');
+// console.log(nextDate) 
+//     // Если превышаем maxDate, останавливаем
+//     if (date2ms(nextDate) > date2ms(maxDate)) {
+//       break;
+//     }
+
+//     data.push({
+//         // year:  yearsToMaturityUpdate(todayDate, nextDate),
+//       // year: currentYear,
+//       year: integerNumber(calculateDecimalYears(todayDate, nextDate)) ,
+//       x:
+//         (date2ms(nextDate) - date2ms(minDate)) /
+//         (date2ms(maxDate) - date2ms(minDate)),
+//       date: nextDate,
+//     });
+
+//     currentYear++;
+//   }
+
+
+//   //добавляю месяца.
+//   if (data.length < 5) {
+//     const monthlyData = generateMonthlyData(minDate, maxDate, date2ms);
+
+//     const fusionYearsAndMonth = [...data, ...monthlyData].sort(
+//       (a, b) => date2ms(a.date) - date2ms(b.date)
+//     );
+//     const startEndDates = [
+//       fusionYearsAndMonth.at(0),
+//       fusionYearsAndMonth.at(-1),
+//     ];
+// console.log(fusionYearsAndMonth, '🤡')
+//     const filter = fusionYearsAndMonth.filter((obj, i) => {
+//       return Object.values(obj).length !== 3 && obj.x > 0;
+//     })
+//     // .map((obj) => ({...obj, year: integerNumber(obj.year)}) )
+//     const result = [
+//       ...filter,
+//     ]
+
+
+//     return result;
+//   }
+
+// return data
+// };
+
 
 
 // Функция для добавления дат по месяцам
@@ -270,6 +396,7 @@ const generateMonthlyData = (minDate, maxDate, date2ms) => {
 
     data.push({
       year: currentYear,
+      // year: integerNumber(calculateDecimalYears(todayDate, nextDate)),
       month: currentMonth,
       x:
         (date2ms(nextDate) - date2ms(minDate)) /
@@ -328,7 +455,7 @@ function generateDaysData(minDate, maxDate, date2ms) {
     
   }
 
-  console.log(data,  'QWER')
+  // console.log(data,  'QWER')
   return data;
 }
 

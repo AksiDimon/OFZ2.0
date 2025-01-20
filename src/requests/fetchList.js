@@ -84,12 +84,12 @@ export function fetchOfzBonds() {
   return fetch(url)
     .then((response) => response.json())
     .then(({ marketdata, securities }) => {
-        console.log(
-            {
-               marketdata: transformResponse(marketdata),
-               securities: transformResponse(securities),
-             }
-        )
+        // console.log(
+        //     {
+        //        marketdata: transformResponse(marketdata),
+        //        securities: transformResponse(securities),
+        //      }
+        // )
         return {
                marketdata: transformResponse(marketdata),
                securities: transformResponse(securities),
@@ -107,7 +107,7 @@ export function fetchOfzBonds() {
     .then(obj => transformSecurity(obj))
 }
 
-fetchOfzBonds().then(console.log);
+// fetchOfzBonds().then(console.log);
 
 
 
