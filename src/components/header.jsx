@@ -1,18 +1,40 @@
 import s from './list.module.css'
-import {useState} from 'react'
+ import {useState, useRef, useLayoutEffect} from 'react'
 import {Link, NavLink} from 'react-router-dom'
 
+
 export function Header () {
-    const [isOpenLink, setIsOpenLink] = useState({
-        ofz: false,
-        corporates: false,
-    })
+    const refEl = useRef(null);
+   const [positionHeader, setPositionHeader] = useState(0) ;
+    // const [isOpenLink, setIsOpenLink] = useState({
+    //     ofz: false,
+    //     corporates: false,
+    // })
+    useLayoutEffect(() => {
+        if(refEl.current) {
+          const rect = refEl.current.getBoundingClientRect();
+
+        //   Object.assign(refEl.current.style, {
+        //     position: 'fixed',
+        //     bottom: `${positionHeader}%`
+        //   })
+        
+        }
+
+
+    }, [positionHeader])
+    console.log(refEl, '🙈', refEl.current)
+    function hendleClick () {
+        const rect = refEl.current.getBoundingClientRect();
+         setPositionHeader(rect.height * Math.random()) ;
+        console.log(rect.height * Math.random(), '😴')
+    }
 
 
     // NavLink
 
     return (
-        <div className={s.barContainer}>
+        <div className={s.barContainer} ref={refEl}>
             
                 <Link 
                 to = {'/bonds/ofz'} 
@@ -32,7 +54,7 @@ export function Header () {
                 >
                     <div className={s.headName}> Замещающие </div>
                 </NavLink>
-
+               {/* <button onClick={hendleClick} > Move Header</button> */}
         </div>
     )
 }

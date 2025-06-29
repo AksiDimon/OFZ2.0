@@ -35,6 +35,7 @@ export function useMouseSelector(onPointerUp) {
 
    
     setSelectionBox({ x: x, y: y, width, height });
+    
   }
 
   function handlePointerUp(event) {

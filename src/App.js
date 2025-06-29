@@ -11,7 +11,7 @@ import { Ofz } from './components/ofz';
 import { Corporates } from './components/corporates';
 import { Replays } from './components/replays';
 import { Layout } from './components/layout'; // Общий макет
-
+import { MeasuredBox } from './components/MesureBox';
 const router = createBrowserRouter([
   {
     path: "/", 
@@ -54,7 +54,8 @@ function App() {
       
       <Provider store = {store}>
       <RouterProvider router = {router} />
-       <TestMyHook/>
+       {/* <TestMyHook/> */}
+        <MeasuredBox/>
       </Provider>
       
      {/* Project
