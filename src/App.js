@@ -1,5 +1,5 @@
 import s from './components/list.module.css'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import {createBrowserRouter, RouterProvider, BrowserRouter} from 'react-router-dom'
 import { List } from "./components/list";
 import { DetalesBond } from './components/detalesBond';
 import { ChartQuotes } from './components/chartQuotes';
@@ -52,6 +52,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <div  >
       
       <Provider store = {store}>
@@ -60,6 +61,7 @@ function App() {
         {/* <MeasuredBox/> */}
       </Provider>
     </div>
+    </BrowserRouter>
   );
 }
 
