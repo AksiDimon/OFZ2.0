@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/OFZ2.0/static/css/main.2c98d5f7.css",
+    "main.js": "/OFZ2.0/static/js/main.b2aee2e3.js",
+    "index.html": "/OFZ2.0/index.html",
+    "main.2c98d5f7.css.map": "/OFZ2.0/static/css/main.2c98d5f7.css.map",
+    "main.b2aee2e3.js.map": "/OFZ2.0/static/js/main.b2aee2e3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2c98d5f7.css",
+    "static/js/main.b2aee2e3.js"
+  ]
+}
