@@ -23,7 +23,12 @@ const router = createBrowserRouter([
       {path: '/detales',element: <DetalesBond/>},
     ],
   },
-]);
+  
+],
+  {
+    basename: process.env.PUBLIC_URL   // <-- вот здесь
+  }
+);
 
 // const router = createBrowserRouter([
 //   // {
@@ -52,7 +57,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    
     <div  >
       
       <Provider store = {store}>
@@ -61,7 +66,6 @@ function App() {
         {/* <MeasuredBox/> */}
       </Provider>
     </div>
-    </BrowserRouter>
   );
 }
 
