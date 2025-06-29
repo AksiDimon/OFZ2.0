@@ -48,6 +48,8 @@ const router = createBrowserRouter([
 //     element: <TestMyHook/>
 //   }
 // ])
+
+
 function App() {
   return (
     <div  >
@@ -55,11 +57,8 @@ function App() {
       <Provider store = {store}>
       <RouterProvider router = {router} />
        {/* <TestMyHook/> */}
-        <MeasuredBox/>
+        {/* <MeasuredBox/> */}
       </Provider>
-      
-     {/* Project
-     <List/> */}
     </div>
   );
 }
