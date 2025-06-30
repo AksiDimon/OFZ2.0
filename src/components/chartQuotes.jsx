@@ -175,6 +175,7 @@ export function ChartQuotes({ListData, calcsStrips, onPointerUp, handleRestMap, 
   return (
     <>
       <button onClick={handleRestMap}> rest</button>
+      <button>Main Page</button>
       <div
         className={s.grid}
         // onPointerDown = {handlePointerDown}
