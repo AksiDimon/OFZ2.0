@@ -1,5 +1,5 @@
 import s from './components/list.module.css'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import {createBrowserRouter, RouterProvider, BrowserRouter} from 'react-router-dom'
 import { List } from "./components/list";
 import { DetalesBond } from './components/detalesBond';
 import { ChartQuotes } from './components/chartQuotes';
@@ -12,6 +12,8 @@ import { Corporates } from './components/corporates';
 import { Replays } from './components/replays';
 import { Layout } from './components/layout'; // Общий макет
 import { TheatresBond } from './components/theatresBond/theatresBond';
+
+
 const router = createBrowserRouter([
   {
     path: "/", 
@@ -23,7 +25,12 @@ const router = createBrowserRouter([
       {path: '/detales/:bondId',element: <TheatresBond/>},
     ],
   },
-]);
+  
+],
+  {
+    basename: process.env.PUBLIC_URL   // <-- вот здесь
+  }
+);
 
 // const router = createBrowserRouter([
 //   // {
@@ -48,17 +55,18 @@ const router = createBrowserRouter([
 //     element: <TestMyHook/>
 //   }
 // ])
+
+
 function App() {
   return (
+    
     <div  >
       
       <Provider store = {store}>
       <RouterProvider router = {router} />
-       <TestMyHook/>
+       {/* <TestMyHook/> */}
+        {/* <MeasuredBox/> */}
       </Provider>
-      
-     {/* Project
-     <List/> */}
     </div>
   );
 }

@@ -8,6 +8,37 @@ body {
     box-sizing: border-box;
 }
 
+.toMainPage {
+  text-decoration: none;
+  font-size: small;
+  display: flex;
+  margin: 1rem;
+  width: 7vw;
+  height: 3vh;
+  font-size: 1.4vh;
+ font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  border-radius: 5px 0 5px;
+  /* font-family: 'Courier New', Courier, monospace; */
+  background-color: #AFDAFC;
+  color: #5a3c16;
+  transition: 
+  transform 0.9s,
+  background-color 0.3s ease,
+  color 0.9s ease ;
+  transform: scale(1);
+}
+
+.toMainPage:hover {
+  background-color: #e4b381;
+  color: #ffffff;
+  transform: scale(1.2) ;
+}
+
+
 .tableContainer {
     flex-direction: column;
     border: 1px solid black;
