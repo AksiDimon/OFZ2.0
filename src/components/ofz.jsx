@@ -8,6 +8,7 @@ import { chartQuotesSlice } from "../redux/ofzSlice";
 import { halperRestMap, getTodayDate } from "../calcsFuncs/calcsQuotes/halperDates";
 import { fetchCorporates } from "../requests/fetchCorporates";
 import { Header } from "./header";
+import { theatresBondSlice } from "../redux/theatresBondSlice";
 
 const todayDate = getTodayDate();
 
@@ -17,6 +18,7 @@ const dispatch = useDispatch();
 
       useEffect(() => {
         dispatch(fetchListData()); 
+        // dispatch(theatresBondSlice.actions.setCurrency('ofz in Usd'))
         // fetchCorporates()
       }, []);
 

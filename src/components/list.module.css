@@ -57,6 +57,7 @@ th, td {
    
 }
 
+
 th {
     background-color: gray; 
     position: sticky; /* Фиксирует заголовки */
@@ -288,7 +289,9 @@ th {
   }
 
 
-
+ .tr:hover {
+    background-color: #123E66;
+  }
 
 
 

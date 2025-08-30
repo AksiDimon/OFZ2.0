@@ -1,5 +1,5 @@
 import s from './list.module.css'
-
+import { Link } from 'react-router-dom';
 
 
 
@@ -36,6 +36,17 @@ export function ListReplays ({ListData}) {
                     return (
                         <tr>
                             {Object.entries(objBond).map(([key, value], index) => {
+                                if (index === 1) {
+                                    // console.log(key ,value)
+                                    return (
+                                        <td>
+                                            <Link to={`/detales/${value}`} style={{ display: 'inline' }}>
+                                                {value}
+                                            </Link>
+                                        </td>
+
+                                    )
+                                }
                                 
                                 if(key === 'percent') {
                                     return (<td>{value}%</td>)

@@ -11,7 +11,7 @@ import { Ofz } from './components/ofz';
 import { Corporates } from './components/corporates';
 import { Replays } from './components/replays';
 import { Layout } from './components/layout'; // Общий макет
-
+import { TheatresBond } from './components/theatresBond/theatresBond';
 const router = createBrowserRouter([
   {
     path: "/", 
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       { path: "bonds/corporates", element: <Corporates /> }, // Вложенные маршруты
       { path: "bonds/ofz", element: <Ofz /> },
       {path: 'bonds/replays', element: <Replays/>},
-      {path: '/detales',element: <DetalesBond/>},
+      {path: '/detales/:bondId',element: <TheatresBond/>},
     ],
   },
 ]);

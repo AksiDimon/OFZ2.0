@@ -15,7 +15,7 @@ export function Corporates () {
 
     useEffect(() => {
        dispatch(fetchCorporatesThunk())
-       fetchReplays()
+    //    fetchReplays()
     }, [])
 
     const onPointerUp = selectionBox => {

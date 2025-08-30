@@ -54,10 +54,12 @@ export function List({ListData}) {
                             // console.log(objBond,' ___')
                             <tr>
                                 {Object.entries(objBond).map(([key, val], index) => {
-                                    if (index === 2) {
+                                    
+                                    if (index === 1) {
+                                        // console.log(key ,val)
                                         return (
                                             <td>
-                                                <Link to={`/detales`} style={{ display: 'inline' }}>
+                                                <Link to={`/detales/${val}`} style={{ display: 'inline' }}>
                                                     {val}
                                                 </Link>
                                             </td>

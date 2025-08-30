@@ -104,10 +104,13 @@ export const generateHorizontalData = (minPercent, maxPercent) => {
   const fractionDigits = digitAfterComma(minPercent, maxPercent); // определяет количество цифр после запятой в числе
 
   const calculateData = (start, end, steps, precision) => {
+   
     const result = [];
     const step = (end - start) / (steps - 1); // Равномерное деление диапазона
     for (let i = 0; i < steps; i++) {
+
       const percent = start + i * step;
+      
       result.push({
         percent: percent.toFixed(precision),
         y: (percent - minPercent) / (maxPercent - minPercent),
@@ -136,6 +139,7 @@ export const generateHorizontalData = (minPercent, maxPercent) => {
 
 
 export const generateVerticalData = (minDate, maxDate, date2ms, counterZoom) => {
+  // console.log(minDate, maxDate, '🥐')
   const todayDate = getTodayDate(); // Например, '2024-12-23'
   // const todayDate = "2024-06-23"
   //    const todayDate = "2024-12-23"

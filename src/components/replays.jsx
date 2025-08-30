@@ -10,6 +10,7 @@ import { ListReplays } from "./listReplays";
 
 import { fetchPrivetReplays } from "../requests/fetchReplays";
 import { TheatresBond } from "./theatresBond/theatresBond";
+import { fetchCurrencyUsdRub } from "./theatresBond/fetchCurrency";
 const todayDate = getTodayDate();
 
 export function Replays () {
@@ -19,7 +20,7 @@ export function Replays () {
     useEffect(() => {
         dispatch(fetchReplaysThunk());
        
-    //    fetchPrivetReplays().then(data => {console.log(data, '😻') })
+        fetchCurrencyUsdRub().then(data => {console.log(data, '😻') })
     }, [])
 
     const onPointerUp = (selectionBox) => {
@@ -46,7 +47,7 @@ export function Replays () {
             <ListReplays
             ListData={ListData}
             />
-            <TheatresBond/>
+           
         </div>
     )
 }
